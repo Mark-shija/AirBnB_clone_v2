@@ -8,16 +8,18 @@ from fabric.api import local
 from datetime import datetime
 import os
 
+
 def do_pack():
     """
     Generates a .tgz archive from the contents of the web_static folder.
 
-    The function creates a 'versions' directory if it does not exist, 
-    generates a timestamped archive of the web_static folder, 
-    and returns the path to the created archive.
+    The function creates a 'versions' directory if it does not exist,
+    generates a timestamped archive of the web_static folder,
+    and returns the path to the created archive if successful.
+    If the archive creation fails, it returns None.
 
     Returns:
-    str: The path to the created .tgz archive.
+    str: The path to the created .tgz archive if successful, None otherwise.
     """
     # Create versions directory if it does not exist
     local("mkdir -p versions")
@@ -28,7 +30,12 @@ def do_pack():
 
     # Create the .tgz archive
     archive_path = f'versions/web_static_{t_str}.tgz'
-    local(f'tar -cvzf {archive_path} web_static')
+    if local(f'tar -cvzf {archive_path} web_static').failed:
+        return None
+
+    # Check if the archive file exists and is valid
+    if not os.path.exists(archive_path):
+        return None
 
     # Get the size of the created archive
     archive_size = os.path.getsize(archive_path)
