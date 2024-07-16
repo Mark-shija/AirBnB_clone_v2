@@ -9,6 +9,7 @@ from os.path import exists
 env.use_ssh_config = True
 env.hosts = ['54.226.6.30', '52.91.160.169']
 
+
 def do_deploy(archive_path):
     """Distributes an archive to the web servers."""
     if not exists(archive_path):
